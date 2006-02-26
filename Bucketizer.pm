@@ -18,6 +18,7 @@ sub new {
     my $self = {     # Overwritable parameters
                  bucketsize      => 100,
                  algorithm       => "simple",
+                 add_buckets     => 1,
 
                  @options,
            
@@ -50,19 +51,32 @@ sub add_item {
     }
 
         # It didn't fit anywhere. Create a new bucket.
-    my $bucket = Algorithm::Bucketizer::Bucket->new(
-        maxsize => $self->{bucketsize},
-        idx     => ++$self->{last_bucket_idx},
-    );
+    return undef unless $self->{add_buckets};
+    my $bucket = $self->add_bucket();
 
     if($bucket->probe_item($item, $size)) {
-        push @{$self->{buckets}}, $bucket;
         $bucket->add_item($item, $size);
         return $bucket;
     }
 
     # It didn't even fit in a new bucket. Forget it.
     return undef;
+}
+
+###########################################
+sub add_bucket {
+###########################################
+    my($self, @options) = @_;
+
+    my $bucket = Algorithm::Bucketizer::Bucket->new(
+        maxsize => $self->{bucketsize},
+        idx     => ++$self->{last_bucket_idx},
+        @options,
+    );
+
+    push @{$self->{buckets}}, $bucket;
+
+    return $bucket;
 }
 
 ##################################################
@@ -431,6 +445,11 @@ they will default to 100, which isn't what you want in most cases.
 C<algorithm> can be left out, it defaults to C<"simple">. 
 If you want retry behaviour, specify C<"retry"> (see L<"Algorithms">).
 
+Another optional parameter, C<add_buckets> specifies if the bucketizer is
+allowed to add new buckets to the end of the brigade as it sees fit. It
+defaults to 1. If set to 0, the bucketizer will operate with a limited
+number of buckets, usually defined by C<add_bucket> calls.
+
 =item *
 
     $b->add_item($item_name, $item_size);
@@ -484,6 +503,15 @@ Return the bucket's index. The first bucket has index 0.
 Return the bucket serial number. That's the bucket index plus 1.
 
 =back
+
+=item *
+
+    $b->add_bucket(
+        maxsize => $maxsize
+    );
+
+Adds a new bucket to the end of the bucket brigade. This method is useful
+for building brigades with buckets of various sizes.
 
 =item *
 
