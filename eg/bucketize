@@ -25,7 +25,7 @@ if($opts{s}) {
 
 my $b = Algorithm::Bucketizer->new(
     bucketsize => $max_size,
-    #algorithm => 'retry'
+    algorithm => 'retry',
 );
 
 for my $file (@ARGV) {
