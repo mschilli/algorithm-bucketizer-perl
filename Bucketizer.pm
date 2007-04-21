@@ -569,13 +569,19 @@ Output:
 
 Algorithm::Permute 0.04 if you want to use the "brute_force" method.
 
+=head1 SCRIPTS
+
+This distribution comes with a script I<bucketize> which puts files
+into directory buckets with limited size. Run C<perldoc bucketize>
+for details.
+
 =head1 AUTHOR
 
 Mike Schilli, E<lt>m@perlmeister.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2002 by Mike Schilli
+Copyright 2002-2007 by Mike Schilli
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
