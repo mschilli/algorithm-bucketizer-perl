@@ -246,11 +246,16 @@ EXAMPLE
 REQUIRES
     Algorithm::Permute 0.04 if you want to use the "brute_force" method.
 
+SCRIPTS
+    This distribution comes with a script *bucketize* which puts files into
+    directory buckets with limited size. Run "perldoc bucketize" for
+    details.
+
 AUTHOR
     Mike Schilli, <m@perlmeister.com>
 
 COPYRIGHT AND LICENSE
-    Copyright 2002 by Mike Schilli
+    Copyright 2002-2007 by Mike Schilli
 
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.
