@@ -1,9 +1,10 @@
 Revision history for Algorithm::Bucketizer.
 
+0.12  04/21/2007
+    (ms) Added 'bucketize' script
+
 0.11  02/25/2006
     (ms) Added support for multiple bucket sizes (add_bucket() method)
-
-0.11  2006/02/25
 
 0.10  04/04/2003
     * fixed Algorithm::Bucketize::Bucket to Algorithm::Bucketizer::Bucket

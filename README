@@ -1,5 +1,5 @@
 ######################################################################
-    Algorithm::Bucketizer 0.10
+    Algorithm::Bucketizer 0.12
 ######################################################################
 
 NAME
@@ -140,6 +140,12 @@ FUNCTIONS
         "algorithm" can be left out, it defaults to "simple". If you want
         retry behaviour, specify "retry" (see "Algorithms").
 
+        Another optional parameter, "add_buckets" specifies if the
+        bucketizer is allowed to add new buckets to the end of the brigade
+        as it sees fit. It defaults to 1. If set to 0, the bucketizer will
+        operate with a limited number of buckets, usually defined by
+        "add_bucket" calls.
+
     *
             $b->add_item($item_name, $item_size);
 
@@ -181,6 +187,14 @@ FUNCTIONS
                 my $serial_number = $bucket->serial();
 
             Return the bucket serial number. That's the bucket index plus 1.
+
+    *
+            $b->add_bucket(
+                maxsize => $maxsize
+            );
+
+        Adds a new bucket to the end of the bucket brigade. This method is
+        useful for building brigades with buckets of various sizes.
 
     *
             $b->optimize(
