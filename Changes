@@ -1,6 +1,6 @@
 Revision history for Algorithm::Bucketizer.
 
-0.13  01/14/2013
+0.13 (01/14/2013)
     (ms) Added github repo
     (ms) Fix for prefilled buckets
 
