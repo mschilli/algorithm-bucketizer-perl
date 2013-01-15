@@ -1,5 +1,5 @@
 ######################################################################
-    Algorithm::Bucketizer 0.12
+    Algorithm::Bucketizer 0.13
 ######################################################################
 
 NAME
@@ -26,7 +26,7 @@ SYNOPSIS
           # Algorithm::Bucketizer::Bucket methods
       my @items  = $bucket->items();
       my $serial = $bucket->serial();
-  
+
 DESCRIPTION
     So, you own a number of mp3-Songs on your hard disc and want to copy
     them to a number of CDs, maxing out the space available on each of them?
@@ -59,7 +59,9 @@ DESCRIPTION
     bucket, it's being dropped in, if not, the algorithm moves on to the
     next bucket. It never goes back to previous buckets, although a new item
     might as well fit in there. This mode might be useful if preserving the
-    original order of items is required.
+    original order of items is required. To query/manipulate the bucket the
+    Bucketizer will try to fit in the next item, use
+    "current_bucket_index()" explained below.
 
     In "retry" mode, the algorithm will try each existing bucket first,
     before opening a new one. If you have many items of various sizes,
@@ -195,6 +197,12 @@ FUNCTIONS
 
         Adds a new bucket to the end of the bucket brigade. This method is
         useful for building brigades with buckets of various sizes.
+
+    *
+            $b->current_bucket_idx( $idx );
+
+        Set/retrieve the index of the bucket that the "simple" algorithm
+        will use first in order to try to insert the next item.
 
     *
             $b->optimize(
