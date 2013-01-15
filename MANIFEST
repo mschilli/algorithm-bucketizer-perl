@@ -6,6 +6,8 @@ eg/sample.pl
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
+MYMETA.json
+MYMETA.yml
 README
 t/1.t
 t/2multsize.t
