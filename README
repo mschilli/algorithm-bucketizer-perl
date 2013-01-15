@@ -1,5 +1,5 @@
 ######################################################################
-    Algorithm::Bucketizer 0.13
+    Algorithm::Bucketizer 0.14
 ######################################################################
 
 NAME
@@ -215,6 +215,24 @@ FUNCTIONS
         are implemented. Both can be ("random" *must* be) terminated by
         either the maximum number of seconds ("maxtime") or iterations
         ("maxrounds").
+
+    *
+            print $b->as_ascii();
+
+        This method requires the "Text::ASCIITable" module from CPAN and
+        prints out the buckets, their sizes and the maximum capacity:
+
+            .------------------.
+            |      Buckets     |
+            +-----+------+-----+
+            | idx | size | max |
+            +-----+------+-----+
+            |   0 |   96 | 100 |
+            |   1 |   69 | 100 |
+            |   2 |   73 | 100 |
+            |   3 |   77 | 100 |
+            |   4 |   40 | 100 |
+            '-----+------+-----'
 
 EXAMPLE
     We've got buckets which hold a weight of 100 each, and we've got 10

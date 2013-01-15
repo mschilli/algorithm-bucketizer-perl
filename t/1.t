@@ -28,6 +28,8 @@ my $exp = "B1I1 B1I2 B1I3 B2I4 B2I5 B3I6 B3I7 B4I8 B4I9 B5I10 ";
 
 ok($out eq $exp) || warn "Expected '$exp' but got '$out'\n";
 
+# print $b->as_ascii();
+
 #########################
 # Simple/Retry
 #########################

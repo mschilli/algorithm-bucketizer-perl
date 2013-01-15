@@ -8,7 +8,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 ##################################################
 sub new {
@@ -224,6 +224,27 @@ sub shuffle {
     }
 
     return @array;
+}
+
+###########################################
+sub as_ascii {
+###########################################
+    my ( $self ) = @_;
+
+    require Text::ASCIITable;
+    my $t = Text::ASCIITable->new( { headingText => 'Buckets' } );
+
+    $t->setCols( "idx", "size", "max" );
+
+    for my $bucket ( @{ $self->{ buckets } } ) {
+        $t->addRow( 
+            $bucket->idx(),
+            $bucket->{ size },
+            $bucket->{ maxsize },
+        );
+    }
+
+    return "$t";
 }
 
 ##################################################
@@ -557,6 +578,25 @@ Optimize bucket distribution. Currently C<"random"> and C<"brute_force">
 are implemented. Both can be (C<"random"> I<must> be) terminated
 by either the maximum number of seconds (C<maxtime>) or 
 iterations (C<maxrounds>).
+
+=item *
+
+    print $b->as_ascii();
+
+This method requires the C<Text::ASCIITable> module from CPAN and prints
+out the buckets, their sizes and the maximum capacity:
+
+    .------------------.
+    |      Buckets     |
+    +-----+------+-----+
+    | idx | size | max |
+    +-----+------+-----+
+    |   0 |   96 | 100 |
+    |   1 |   69 | 100 |
+    |   2 |   73 | 100 |
+    |   3 |   77 | 100 |
+    |   4 |   40 | 100 |
+    '-----+------+-----'
 
 =back
 

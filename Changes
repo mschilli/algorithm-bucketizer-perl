@@ -1,5 +1,10 @@
 Revision history for Algorithm::Bucketizer.
 
+0.14 (not yet released)
+    (ms) as_ascii() (requires Text::ASCIITable from CPAN) now prints
+         a textual representation of all buckets, their sizes and their
+         max capacity.
+
 0.13 (01/14/2013)
     (ms) Added github repo
     (ms) Fix for prefilled buckets
