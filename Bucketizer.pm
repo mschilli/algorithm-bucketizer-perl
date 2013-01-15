@@ -8,7 +8,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 ##################################################
 sub new {
@@ -23,7 +23,11 @@ sub new {
                  @options,
            
                      # Internal stuff
-                 last_bucket_idx => -1,
+
+                   # index (0-..) of bucket we're currently 
+                   # inserting items into
+                 cur_bucket_idx  => 0,
+
                  buckets         => [],
                };
 
@@ -35,8 +39,11 @@ sub add_item {
 ##################################################
     my($self, $item, $size) = @_;
 
-    my $first = $self->{last_bucket_idx};
+      # in 'simple' mode, we continue with the bucket we
+      # inserted the last item into
+    my $first = $self->{cur_bucket_idx};
 
+      # retry tries all buckets
     $first = 0 if $self->{algorithm} eq 'retry';
 
         # Check if it fits in any existing bucket.
@@ -46,6 +53,7 @@ sub add_item {
 
         if($bucket->probe_item($item, $size)) {
             $bucket->add_item($item, $size);
+            $self->{ cur_bucket_idx } = $idx;
             return $bucket;
         }
     }
@@ -56,11 +64,24 @@ sub add_item {
 
     if($bucket->probe_item($item, $size)) {
         $bucket->add_item($item, $size);
+        $self->{ cur_bucket_idx } = $bucket->{ idx };
         return $bucket;
     }
 
     # It didn't even fit in a new bucket. Forget it.
     return undef;
+}
+
+##################################################
+sub current_bucket_idx {
+##################################################
+    my($self, $idx ) = @_;
+
+    if( defined $idx ) {
+        $self->{ cur_bucket_idx } = $idx;
+    }
+
+    return $self->{ cur_bucket_idx };
 }
 
 ###########################################
@@ -70,10 +91,12 @@ sub add_bucket {
 
     my $bucket = Algorithm::Bucketizer::Bucket->new(
         maxsize => $self->{bucketsize},
-        idx     => ++$self->{last_bucket_idx},
+        idx     => $#{ $self->{ buckets } } + 1,
         @options,
     );
 
+      # adding a bucket won't increase the current bucket index,
+      # just append it to the end of the chain
     push @{$self->{buckets}}, $bucket;
 
     return $bucket;
@@ -100,8 +123,8 @@ sub prefill_bucket {
             maxsize => $self->{bucketsize},
             idx     => $bucket_idx,
         );
-        $self->{last_bucket_idx} = $bucket_idx;
         $self->{buckets}->[$bucket_idx] = $bucket;
+        $self->{cur_bucket_idx}  = $bucket_idx;
     }
 
     $bucket->add_item($item, $size);
@@ -164,7 +187,7 @@ sub optimize {
 
     # We should have a ideal distribution now, nuke all buckets and refill
     $self->{buckets}         = [];
-    $self->{last_bucket_idx} = -1;
+    $self->{cur_bucket_idx}  = 0;
     $self->{algorithm}       = "retry"; # We're optimizing
 
     for (@minitems) {
@@ -358,7 +381,9 @@ in the order in which they're arriving. If an item fits into the current bucket,
 it's being dropped in, if not, the algorithm moves on to the next bucket. It
 never goes back to previous buckets, although a new item might as well 
 fit in there. This mode might be useful if preserving the original order
-of items is required.
+of items is required. To query/manipulate the bucket the Bucketizer
+will try to fit in the next item, use C<current_bucket_index()> explained
+below.
 
 In C<retry> mode, the algorithm will try each existing bucket first, 
 before opening
@@ -512,6 +537,13 @@ Return the bucket serial number. That's the bucket index plus 1.
 
 Adds a new bucket to the end of the bucket brigade. This method is useful
 for building brigades with buckets of various sizes.
+
+=item *
+
+    $b->current_bucket_idx( $idx );
+
+Set/retrieve the index of the bucket that the C<simple> algorithm will
+use first in order to try to insert the next item.
 
 =item *
 
